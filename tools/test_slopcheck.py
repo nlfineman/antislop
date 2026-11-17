@@ -83,6 +83,9 @@ class SlopcheckTests(unittest.TestCase):
     def test_real_contrast_in_one_clause_passes(self):
         self.assertEqual(errors("The mayor did not attend the vote on Tuesday."), [])
 
+    def test_instruction_followed_by_reason_passes(self):
+        self.assertEqual(errors("Do not add jokes to the summaries. They are meant to be plain."), [])
+
     def test_quotes_are_skipped(self):
         self.assertEqual(errors('The mayor said "let that sink in" twice.'), [])
         self.assertEqual(errors("The mayor said “make no mistake” twice."), [])

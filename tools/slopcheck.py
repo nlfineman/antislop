@@ -39,8 +39,8 @@ RULES = [
     ("contrast", ERROR,
      re.compile(
          r"\b(?:not|n" + AP + r"t)\s+(?:just|only|merely|simply)\b[^.?!]{0,100}?\bbut\b"
-         r"|\b(?:(?:is|are|was|were|does|did|do)n" + AP + r"t"
-         r"|(?:is|are|was|were|does|did|do|it" + AP + r"s|that" + AP + r"s|this is)\s+not)\b"
+         r"|\b(?:(?:is|are|was|were|does|did)n" + AP + r"t"
+         r"|(?:is|are|was|were|does|did|it" + AP + r"s|that" + AP + r"s|this is)\s+not)\b"
          r"[^.?!;]{1,80}[.;,]\s+(?:it|that|this|they)"
          r"(?:" + AP + r"s|" + AP + r"re|\s+(?:is|are|was|were|means?))\b"
          r"|\bnot because\b[^.?!]{1,80}[.,;]\s*(?:but\s+)?because\b"
