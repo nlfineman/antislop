@@ -1,5 +1,7 @@
 # Anti-slop rules
 
+<!-- slopcheck-disable: this file quotes the patterns it bans -->
+
 Instructions for any agent, or any person, writing or editing prose that should not read as machine-written. The rules were built for news and nonfiction, and most of them apply to any expository writing.
 
 This file merges four open-source guides (see `README.md` for credits) and settles the places where they disagree.
@@ -205,7 +207,7 @@ A plain sentence is not slop. Stating what happened in flat words is often the r
 
 ### When writing
 
-Write with these rules in mind, then run the final pass in section 9 on your own output. Fixing a paragraph by rewriting it around its main point works better than patching flagged phrases one at a time.
+Read `examples/before-after.md` first. Write with these rules in mind, then run the final pass in section 9 on your own output. If you can run commands, check the draft with `python3 tools/slopcheck.py draft.md` and revise until it reports no errors. Fixing a paragraph by rewriting it around its main point works better than patching flagged phrases one at a time.
 
 ### When editing
 
@@ -213,7 +215,7 @@ Write with these rules in mind, then run the final pass in section 9 on your own
 2. Mark every pattern, strongest first. Check paragraph scale as well as sentences: the same closer under several sections is one tell repeated.
 3. Make the smallest edit that removes the pattern. Leave strong sentences alone.
 4. Compare the edit with the original and confirm every fact, name, number, date, quotation, attribution, and link survived unchanged. Edits to lists, qualifiers, and labeled items lose facts most often.
-5. Run section 9.
+5. Run section 9, and run `tools/slopcheck.py` on the result if you can run commands.
 6. Return the full edited copy and a short list of what changed. If you could not cover a section, say which.
 
 ### Detection only
