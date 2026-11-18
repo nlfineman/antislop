@@ -47,7 +47,7 @@ It prints each finding with its line, column, and rule, and exits `0` when the d
 | `--list-rules` | Print every rule id |
 | `-` | Read from standard input |
 
-The checker skips code, link targets, blockquotes, and text inside double quotation marks, so quoted speech is never flagged. To exempt a passage, put `<!-- slopcheck-disable -->` before it and `<!-- slopcheck-enable -->` after it.
+The checker skips code, link targets, blockquotes, and text inside double quotation marks, so quoted speech is never flagged. It also skips separator lines made of dashes, and a dash that only introduces a short sign-off, dateline, or source credit at the end of a line ("[Title](url) — Reuters"), so newsletter templates do not trip the dash rule. A dash inside a sentence is still an error. To exempt a passage, put `<!-- slopcheck-disable -->` before it and `<!-- slopcheck-enable -->` after it.
 
 To use it with a writing agent, tell the agent: "After drafting, run `python3 tools/slopcheck.py --json` on the draft and revise until it exits 0. Do not use `--ignore` or the disable comment to pass."
 

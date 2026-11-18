@@ -86,6 +86,28 @@ class SlopcheckTests(unittest.TestCase):
     def test_instruction_followed_by_reason_passes(self):
         self.assertEqual(errors("Do not add jokes to the summaries. They are meant to be plain."), [])
 
+    def test_separators_and_attributions_are_skipped(self):
+        text = (
+            "The council voted 6 to 3 on Tuesday.\n\n"
+            "\u2014 Jane Doe\n\n"
+            "\u2014 2026-11-18\n\n"
+            "\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\n\n"
+            "* **Politics:** [Council ends free buses](https://example.com/a) \u2014 The Associated Press\n\n"
+            "[Fare rises to $1.50](https://example.com/b) \u2013 Reuters\n\n"
+            "\u201c_**\"Print what others want hidden.\"**_\u201d \u2014\n"
+        )
+        self.assertEqual(errors(text), [])
+
+    def test_dashes_in_prose_still_fail(self):
+        for text in (
+            "He had one goal \u2014 power over the board.",
+            "\u2014 And then the council voted to end free service for every rider in the city.",
+            "[The report](https://example.com) \u2014 released Monday. It found waste.",
+            "Prices rose \u2014 sharply.",
+        ):
+            with self.subTest(text=text):
+                self.assertIn("dash", {f["rule"] for f in errors(text)})
+
     def test_quotes_are_skipped(self):
         self.assertEqual(errors('The mayor said "let that sink in" twice.'), [])
         self.assertEqual(errors("The mayor said “make no mistake” twice."), [])

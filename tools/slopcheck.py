@@ -9,7 +9,9 @@ Exit status: 0 clean, 1 findings, 2 could not run.
 Errors always fail. Warnings fail only with --strict.
 
 Skipped: fenced code, inline code, link targets, blockquotes, text inside
-double quotation marks, and anything between
+double quotation marks, separator lines made of dashes or rules, a dash that
+only introduces a short sign-off, dateline, or source credit at the end of a
+line, and anything between
 <!-- slopcheck-disable --> and <!-- slopcheck-enable -->.
 
 No dependencies beyond the Python 3 standard library.
@@ -200,8 +202,31 @@ def blank(match):
     return " " * len(match.group(0))
 
 
+SEPARATOR = re.compile(r"[\s\-\u2013\u2014_*=~\u2500\u2501]{3,}")
+# A dash that only introduces a short name or date at the end of a line:
+# a sign-off ("\u2014 Jane Doe"), a dateline ("\u2014 2026-11-18"), or a credit
+# after a link ("[Title](url) \u2014 Reuters"). Up to six words, no sentence
+# punctuation after the dash.
+ATTRIBUTION = re.compile(
+    r"(?:^\s*|(?<=\))\s*)([\u2014\u2013])(?=\s*[^\s.!?;:()\[\]](?:[^.!?;:()\[\]]*)$)")
+
+QUOTE_CREDIT = re.compile(r"(?<=[\u201c\u201d\u2018\u2019\"'*_])\s*[\u2014\u2013](?=\s*$)")
+
+
+def mask_attribution(line):
+    def repl(match):
+        tail = line[match.end():]
+        if len(re.findall(r"\S+", tail)) > 6:
+            return match.group(0)
+        return match.group(0)[:-1] + " "
+    line = ATTRIBUTION.sub(repl, line)
+    # A dash left dangling after a closing quotation, before a name on the next line.
+    return QUOTE_CREDIT.sub(lambda m: m.group(0)[:-1] + " ", line)
+
+
 def mask_line(line):
     """Replace text that must not be checked with spaces, keeping columns."""
+    line = mask_attribution(line)
     line = re.sub(r"`[^`]*`", blank, line)
     line = re.sub(r"\]\([^)]*\)", blank, line)
     line = re.sub(r"https?://\S+", blank, line)
@@ -225,7 +250,8 @@ def prepare(text):
             disabled = False
             out.append("")
             continue
-        if in_code or disabled or stripped.startswith(">") or stripped.startswith("<!--"):
+        if (in_code or disabled or stripped.startswith(">") or stripped.startswith("<!--")
+                or SEPARATOR.fullmatch(stripped)):
             out.append("")
             continue
         out.append(mask_line(raw))
